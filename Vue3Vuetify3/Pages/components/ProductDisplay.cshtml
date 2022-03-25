@@ -1,0 +1,24 @@
+﻿
+ <script type="vue-template" id="product-display">
+	<div><h1>{{name}}<h1></div>
+  </script>
+   <script type="text/javascript">
+	  Vue.createApp().component('product-display',{
+		template: '#product-display',
+		 props: {
+				name: 'Test'
+			},
+		
+	    data: function() {
+				return {
+			
+			}
+		},
+		methods: {
+		
+		},
+		computed: {
+		
+		}
+	})
+   </script>

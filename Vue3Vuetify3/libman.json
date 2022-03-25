@@ -1,0 +1,18 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/"
+    },
+    {
+      "library": "vue@3.2.31",
+      "destination": "wwwroot/vue/"
+    },
+    {
+      "library": "MaterialDesign-Webfont@6.5.95",
+      "destination": "wwwroot/lib/MaterialDesign-Webfont/"
+    }
+  ]
+}

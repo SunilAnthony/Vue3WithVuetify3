@@ -1,0 +1,25 @@
+﻿@page
+@model Vue3Vuetify3.Pages.StoreModel
+@{
+}
+
+
+<partial name="~/Pages/components/ProductDisplay.cshtml"/>
+
+<v-app>
+     <p>Insert product display below</p>
+     <product-display :name="name"></product-display>
+
+</v-app>
+
+<script type="application/javascript">
+    var storeApp = {
+        data: function() {
+          return {
+                cart: 0,
+                name: 'Sunil Anthony'
+          }
+        }
+    }
+    mixinArray.push(storeApp);
+</script>

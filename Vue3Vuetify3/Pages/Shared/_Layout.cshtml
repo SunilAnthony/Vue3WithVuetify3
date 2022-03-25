@@ -1,0 +1,381 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - Vue3 Demo with Vuetify 3</title>
+	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/Vue3Vuetify3.styles.css" asp-append-version="true" />
+
+
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+	<link rel="stylesheet" href="~/lib/MaterialDesign-Webfont/css/materialdesignicons.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vuetify/3.0.0-beta.0/vuetify.min.css" />
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Material+Icons">
+	<link rel="stylesheet" href="~/lib/toastr.js/toastr.min.css" />
+	<link rel="stylesheet" media="screen" href="~/css/site.css" asp-append-version="true" />
+
+	<script src="~/lib/jquery/dist/jquery.min.js"></script>
+	<script src="~/vue/vue.global.prod.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vuetify/3.0.0-beta.0/vuetify.min.js"></script>
+	<script src="~/lib/toastr.js/toastr.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
+
+
+	@RenderSection("Head", required: false)
+
+</head>
+<body>
+
+	<div id="app">
+		@Html.AntiForgeryToken()
+		<div id="tempForm"></div>
+		<v-app dark v-scroll="onScroll">
+
+			<v-fab-transition>
+				<v-btn color="grey darken-3" dark fab fixed bottom right v-show="showFab"
+					   @@click="$vuetify.goTo('#app', {duration: 500, offset: 0})">
+					<v-icon>mdi-chevron-up-circle</v-icon>
+				</v-btn>
+			</v-fab-transition>
+
+			<v-navigation-drawer :clipped="clipped"
+								 v-model="drawer"
+								 enable-resize-watcher
+								 app
+								 light
+								 color="primary">
+				<v-list color="primary">
+					<v-list-item class="px-2">
+						<v-list-item-avatar>
+							<v-img src="https://randomuser.me/api/portraits/men/90.jpg"></v-img>
+						</v-list-item-avatar>
+						<!-- <v-layout row wrap justify-end pr-3>
+						  <v-flex shrink>
+							<span @@click.stop="drawer = !drawer"><i class="fas fa-thumbtack"></i></span>
+						  </v-flex>
+						</v-layout>-->
+					</v-list-item>
+
+					<v-list-item link>
+						<v-list-item-content>
+							<v-list-item-title class="title">Jack Adams</v-list-item-title>
+							<v-list-item-subtitle>jack_adams@gmail.com</v-list-item-subtitle>
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
+
+				<v-divider></v-divider>
+
+				<v-list nav dense color="primary">
+					<v-list-item v-for="item in items"
+								 :key="item.title"
+								 :href="item.route"
+								 link>
+						<v-list-item-icon>
+							<v-icon>{{ item.icon }}</v-icon>
+						</v-list-item-icon>
+						<v-list-item-content>
+							<v-list-item-title>{{ item.title }}</v-list-item-title>
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
+			</v-navigation-drawer>
+
+			<v-app-bar class="d-flex flex-column"  light :clipped-left="clipped">
+				<v-app-bar-nav-icon @@click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+				<!-- <v-icon v-if="drawer" @@click.stop="drawer = !drawer" class="mdi-36px">mdi-dots-horizontal-circle-outline</v-icon>
+				<v-icon v-else @@click.stop="drawer = !drawer" class="mdi-36px">mdi-menu</v-icon> -->
+				<v-img class="mx-2" src="images/stellar-logo.png" max-height="150" max-width="150" contain></v-img>
+				<v-toolbar-title></v-toolbar-title>
+				<v-spacer></v-spacer>
+				<v-toolbar-items class="hidden-sm-and-down">
+					<v-btn text v-for="item in menus" :key="item.title" :to="item.route">
+						<v-icon left dark>{{ item.icon }}</v-icon>
+						{{ item.title }}
+					</v-btn>
+					<v-btn @@click.prevent="login" v-if="!user" text>
+						<v-icon class="mr-1">mdi-account-arrow-right</v-icon>
+						<span>Login</span>
+					</v-btn>
+					<v-btn @@click.prevent="logout" v-else text>
+						<v-icon class="mr-1">mdi-account-arrow-left</v-icon>
+						<span>Logout</span>
+					</v-btn>
+				</v-toolbar-items>
+				<div class="hidden-md-and-up">
+					<v-menu open-on-click close-on-click bottom offset-y>
+						<template v-slot:activator="{ on }">
+							<v-btn icon light v-on="on">
+								<v-icon>mdi-dots-horizontal-circle</v-icon>
+							</v-btn>
+						</template>
+
+						<v-list>
+							<v-list-item v-for="(item, index) in menus" :key="index">
+								<v-list-item-title>{{ item.title }}</v-list-item-title>
+							</v-list-item>
+							<v-list-item @@click.prevent="login" v-if="!user">
+								Login
+								<v-icon>mdi-account-arrow-right</v-icon>
+							</v-list-item>
+							<v-list-item @@click.prevent="logout" v-else>
+								Logout
+								<v-icon>mdi-account-arrow-left</v-icon>
+							</v-list-item>
+						</v-list>
+					</v-menu>
+				</div>
+			</v-app-bar>
+
+			<!-- Sizes your content based upon application components -->
+			<v-main>
+
+				<!-- Provides the application the proper gutter -->
+				<v-container fluid>
+					@RenderBody()
+				</v-container>
+			</v-main>
+
+			<v-footer id="footer">
+				<v-row
+				  justify="center"
+				  no-gutters>
+				<v-card class="bg-grey text-center" elevation="0"
+				  rounded="0"
+				  width="100%">
+							<v-card-text>
+								@*<img src="~/images/ssl.png"/>
+								<img src="https://sectigo.com/images/seals/sectigo_trust_seal_lg.png" border="0">*@
+							</v-card-text>
+							<!-- <v-divider></v-divider> -->
+
+							<v-card-text class="black--text">
+								&copy;
+								{{ new Date().getFullYear() }} —
+								<strong>Powered by Stellar MLS</strong>
+							</v-card-text>
+							 </v-row>
+			</v-footer>
+		</v-app>
+			@await RenderSectionAsync("js", required: false)
+	</div>
+
+
+
+	@await RenderSectionAsync("Scripts", required: false)
+
+
+<script>
+
+	const vuetify = Vuetify.createVuetify({
+	theme: {
+		 defaultTheme: 'stellarLightTheme',
+		 themes: {
+			 stellarLightTheme: {
+				 dark: false,
+				 colors: {
+					primary: '#430098',
+					secondary: '#9e1c64',
+					default: '#5c6670',
+					info: '#0033a0',
+					success: '#007985',
+					warning: '#f38b00',
+					accent: '#000000',
+					error: '#b71c1c',
+					danger: '#FF0000'
+				 }
+			 },
+			 stellarDarkTheme: {
+				 dark: true,
+				  colors: {
+					primary: '#430098',
+					secondary: '#9e1c64',
+					default: '#5c6670',
+					info: '#0033a0',
+					success: '#007985',
+					warning: '#f38b00',
+					accent: '#000000',
+					error: '#b71c1c',
+					danger: '#FF0000'
+				 }
+			 }
+		 }
+	},
+})
+
+const app = Vue.createApp({
+	mixins: mixinArray,
+	data() {
+		return {
+			drawer: true,
+			clipped: false,
+			footerElev: 12,
+			offsetTop: 0,
+			user: null,
+			icons: ['mdi-facebook', 'mdi-twitter', 'mdi-linkedin', 'mdi-instagram'],
+			menus: [
+				{ icon: 'mdi-home', title: 'Home', route: '/' },
+				{ icon: 'mdi-bell', title: 'Notifications', route: '/notification' },
+				{ icon: 'mdi-message-text', title: 'Messages', route: '/message' },
+				{ icon: 'mdi-phone-classic', title: 'Support', route: '/support' },
+			],
+			items: [
+				{ title: 'Dashboard', icon: 'mdi-view-dashboard', route: '/dashboard' },
+				{ title: 'Pofile', icon: 'mdi-account', route: '/profile' },
+				{ title: 'Statistic', icon: 'mdi-account-cog', route: '/statistic' },
+				{ title: 'Settings', icon: 'mdi-account-cog', route: '/settings' },
+				{ title: 'About', icon: 'mdi-help-box', route: '/about' },
+			],
+		}
+	},
+	methods: {
+
+
+		onScroll() {
+			this.offsetTop = window.pageYOffset || document.documentElement.scrollTop;
+		},
+		toTop() {
+			window.scrollTo({
+				top: 0,
+				left: 0,
+				behavior: 'smooth'
+			});
+		},
+
+	},
+	computed: {
+		showFab() {
+			return this.offsetTop > 60;
+		},
+
+	},
+
+})
+
+app.use(vuetify)
+
+
+app.mount('#app');
+
+
+</script>
+
+	<style scoped>
+		.footer-shadow {
+			box-shadow: 20px 22px 24px 20px rgba(50, 50, 50, 0.75), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12) !important;
+			background-color: #F5F5F5 !important;
+		}
+
+		#footer {
+		  position: fixed;
+		  bottom: 0;
+		  width: 100%;
+		  padding: 0px !important;
+		}
+		.v-list--density-default.v-list--one-line .v-list-item {
+			color: #ffffff;
+		}
+		.theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+			font-size: 16px !important;
+			font-weight: 500 !important;
+			background-color: #430098 !important;
+			color: #ffffff !important;
+		}
+
+		.v-data-table-header .mdi:before, .mdi-set {
+			color: #ffffff !important;
+		}
+
+		.v-card__actions {
+			display: block !important;
+		}
+
+		.v-stepper__step.v-stepper__step--inactive.v-stepper__step--complete.disabled {
+			background-color: rgba(255, 255, 255, 0.50) !important;
+			border-color: rgba(255, 255, 255, 0.50) !important;
+			color: rgba(255, 255, 255, 0.50) !important;
+			display: none;
+		}
+
+		.v-stepper__step.v-stepper__step--complete.disabled {
+			background-color: rgba(255, 255, 255, 0.50) !important;
+			border-color: rgba(255, 255, 255, 0.50) !important;
+			color: rgba(255, 255, 255, 0.50) !important;
+			display: none;
+		}
+
+		.v-sheet.theme--light.v-item--active {
+			border: 2px solid #2097e6;
+		}
+		/* .v-list-item.v-list-item--link {
+							 border: 1px solid #ebe6e6;
+						}*/
+		/* .v-list-item--active {
+							 border: 1px solid #2097e6;
+						}*/
+		.truncate {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+			.truncate:hover {
+				overflow: visible;
+				white-space: normal;
+			}
+
+		.v-select__slot > .v-label {
+			color: #ffffff !important;
+		}
+
+		.v-list-item--link:before {
+			background-color: none !important;
+			bottom: 0;
+			content: "";
+			left: 0;
+			opacity: 0;
+			pointer-events: none;
+			position: absolute;
+			right: 0;
+			top: 0;
+			transition: .3s cubic-bezier(.25,.8,.5,1);
+		}
+
+		.v-list-item--active::before,
+		.v-list-item--active::after {
+			content: '';
+			position: absolute !important;
+			top: 0 !important;
+			left: 0 !important;
+			border-color: transparent !important;
+			border-style: solid !important;
+		}
+
+		.v-list-item--active::after {
+			content: '\2713' !important;
+			font-size: 13px !important;
+			line-height: 13px !important;
+			font-weight: bold !important;
+			color: white !important;
+		}
+
+		.cutOut {
+			border: none;
+			border-top: 3px dashed #000000;
+			color: #fff;
+			background-color: #fff;
+			height: 2px;
+		}
+
+		.v-data-table > .v-data-table__wrapper .v-data-table__mobile-table-row {
+			display: initial;
+			border: 1px solid #A0A0A0;
+		}
+	</style>
+
+
+</body>
+</html>
