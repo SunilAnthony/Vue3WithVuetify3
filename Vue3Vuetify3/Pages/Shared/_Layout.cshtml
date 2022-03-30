@@ -23,12 +23,11 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
-
 	@RenderSection("Head", required: false)
-
+	
 </head>
 <body>
-
+	@await RenderSectionAsync("Component", required: false)
 	<div id="app">
 		@Html.AntiForgeryToken()
 		<div id="tempForm"></div>
@@ -132,7 +131,7 @@
 
 			<!-- Sizes your content based upon application components -->
 			<v-main>
-
+				
 				<!-- Provides the application the proper gutter -->
 				<v-container fluid>
 					@RenderBody()
@@ -160,14 +159,10 @@
 							 </v-row>
 			</v-footer>
 		</v-app>
-			@await RenderSectionAsync("js", required: false)
+		
 	</div>
-
-
-
-	@await RenderSectionAsync("Scripts", required: false)
-
-
+	
+	
 <script>
 
 	const vuetify = Vuetify.createVuetify({
@@ -255,13 +250,16 @@ const app = Vue.createApp({
 
 })
 
-app.use(vuetify)
+@await RenderSectionAsync("VueComponent", required: false)
 
+app.use(vuetify)
 
 app.mount('#app');
 
 
 </script>
+@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("js", required: false)
 
 	<style scoped>
 		.footer-shadow {

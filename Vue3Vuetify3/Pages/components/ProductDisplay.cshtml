@@ -1,17 +1,20 @@
 ﻿
- <script type="vue-template" id="product-display">
-	<div><h1>{{name}}<h1></div>
-  </script>
+<template type="text/x-template" id="ProductDisplay">
+	<p>Coming from Vue Component</p>
+	<p>{{name}}<p>
+	<p>{{message}}<p>
+</template>
+
    <script type="text/javascript">
-	  Vue.createApp().component('product-display',{
-		template: '#product-display',
+	var vueProduct = {
+		template: '#ProductDisplay',
 		 props: {
-				name: 'Test'
+				name: ''
 			},
 		
 	    data: function() {
 				return {
-			
+				message: "I'm in test mode"
 			}
 		},
 		methods: {
@@ -20,5 +23,6 @@
 		computed: {
 		
 		}
-	})
+	}
+
    </script>
